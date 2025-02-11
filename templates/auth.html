@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CloudHub</title>
+    <link rel="icon" type="image/x-icon" href="static/anwb.ico">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(90deg, rgba(238,174,202,1) 0%, rgba(148,187,233,1) 100%);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+            flex-direction: column;
+            padding: 0;
+        }
+        .header {
+            width: 100%;
+            max-width: 100%;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 28px;
+            color: #555;
+        }
+        .login-container {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+        .login-container h2 {
+            margin-bottom: 20px;
+            font-size: 24px;
+            color: #555;
+        }
+        .login-container .flash {
+            color: red;
+            margin: 10px 0;
+        }
+        .login-container label {
+            display: block;
+            margin: 10px 0 5px;
+            font-size: 14px;
+            color: #555;
+            text-align: left;
+        }
+        .login-container input[type="text"], 
+        .login-container input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        .login-container input[type="text"]:focus, 
+        .login-container input[type="password"]:focus {
+            border-color: #00a2ed;
+            outline: none;
+        }
+        .login-container button {
+            width: 100%;
+            padding: 10px;
+            background-color: #00a2ed;
+            border: none;
+            border-radius: 5px;
+            color: #fff;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .login-container button:hover {
+            background-color: #0078d7;
+        }
+        .login-container p {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #666;
+        }
+        .login-container p a {
+            color: #00a2ed;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        .login-container p a:hover {
+            color: #0078d7;
+        }
+        .loader-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(232, 232, 232, 0.8);
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+        .loading-title {
+            display: block;
+            text-align: center;
+            font-size: 1.5vmax;
+            font-family: 'Inter', sans-serif;
+            font-weight: bold;
+            padding-bottom: 15px;
+            color: #888;
+            margin-left: 70px;
+          }
+          
+          .loading-circle {
+            display: block;
+            border-left: 5px solid;
+            border-top-left-radius: 100%;
+            border-top: 5px solid;
+            margin: 5px;
+            animation-name: Loader_611;
+            animation-duration: 1500ms;
+            animation-timing-function: linear;
+            animation-delay: 0s;
+            animation-iteration-count: infinite;
+            animation-direction: normal;
+            animation-fill-mode: forwards;
+          }
+          
+          .sp1 {
+            border-left-color: #F44336;
+            border-top-color: #F44336;
+            width: 40px;
+            height: 40px;
+          }
+          
+          .sp2 {
+            border-left-color: #FFC107;
+            border-top-color: #FFC107;
+            width: 30px;
+            height: 30px;
+          }
+          
+          .sp3 {
+            width: 20px;
+            height: 20px;
+            border-left-color: #8bc34a;
+            border-top-color: #8bc34a;
+          }
+          
+          @keyframes Loader_611 {
+            0% {
+              transform: rotate(0deg);
+              transform-origin: right bottom;
+            }
+          
+            25% {
+              transform: rotate(90deg);
+              transform-origin: right bottom;
+            }
+          
+            50% {
+              transform: rotate(180deg);
+              transform-origin: right bottom;
+            }
+          
+            75% {
+              transform: rotate(270deg);
+              transform-origin: right bottom;
+            }
+          
+            100% {
+              transform: rotate(360deg);
+              transform-origin: right bottom;
+            }
+          }
+          .toggle{
+            cursor: pointer;
+          }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <img src="static/logo.png" alt="ANWB Logo" style='width:15%'>
+        <h1>Welcome to CloudHub BusinessChatBot Solution</h1>
+    </header>
+    <div class="login-container" id="login-container">
+        <h2>Login</h2>
+        <input type="text" id="email" name="email" placeholder='Enter your registered Email id' required>
+        <input type="password" id="login-password" placeholder="Password">
+        <button onclick="login()">Login</button>
+        <p class="toggle" onclick="toggleForm()">Don't have an account? Sign up</p>
+    </div>
+    
+    <div class="login-container" id="signup-container" style="display: none;">
+        <h2>Sign Up</h2>
+        <input type="text" id="signup-name" placeholder="Full Name">
+        <input type="text" id="signup-email" placeholder="Enter your Email ID" required>
+        <input type="password" id="signup-password" placeholder="Password">
+        <button onclick="signup()">Sign Up</button>
+        <p class="toggle" onclick="toggleForm()">Already have an account? Login</p>
+    </div>
+    <div id="loader" class="loader-overlay">
+        <label class="loading-title">Hold on....</label>
+        <span class="loading-circle sp1">
+            <span class="loading-circle sp2">
+                <span class="loading-circle sp3"></span>
+            </span>
+        </span>
+    </div>
+</body>
+<script>
+    function toggleForm() {
+        const loginContainer = document.getElementById("login-container");
+        const signupContainer = document.getElementById("signup-container");
+
+        if (loginContainer.style.display === "none") {
+            loginContainer.style.display = "block";
+            signupContainer.style.display = "none";
+        } else {
+            loginContainer.style.display = "none";
+            signupContainer.style.display = "block";
+        }
+    }
+
+    function showLoader() {
+        document.getElementById('loader').style.display = 'flex';
+    }
+
+    function hideLoader() {
+        document.getElementById('loader').style.display = 'none';
+    }
+
+    async function login() {
+        showLoader();
+        const email = document.getElementById("email").value;
+        const password = document.getElementById("login-password").value;
+
+        try {
+            const response = await fetch("/login", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email, password }),
+            });
+
+            const result = await response.json();
+            if (response.ok) {
+                window.location.href = result.redirect;
+            } else {
+                hideLoader();
+                alert(result.error);
+            }
+        } catch (error) {
+            hideLoader();
+            alert("Something went wrong. Please try again.");
+        }
+    }
+
+    async function signup() {
+        showLoader();
+        const username = document.getElementById("signup-name").value;
+        const email = document.getElementById("signup-email").value;
+        const password = document.getElementById("signup-password").value;
+
+        try {
+            const response = await fetch("/signup", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ username, email, password }),
+            });
+
+            const result = await response.json();
+            if (response.ok) {
+                alert("Signup successful! Please login.");
+                toggleForm();
+            } else {
+                hideLoader();
+                alert(result.error);
+            }
+        } catch (error) {
+            hideLoader();
+            alert("Something went wrong. Please try again.");
+        }
+    }
+</script>
+</html>

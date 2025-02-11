@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Website Crawler</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --secondary-color: #1e40af;
+            --success-color: #16a34a;
+            --error-color: #dc2626;
+            --background-color: #f8fafc;
+            --card-background: #ffffff;
+            --text-color: #1e293b;
+            --border-color: #e2e8f0;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(90deg, rgba(238,174,202,1) 0%, rgba(148,187,233,1) 100%);
+            background-size: 200% 200%;
+            animation: gradientAnimation 10s ease infinite;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+        }
+        @keyframes gradientAnimation {
+            0% { background-position: 0% 0%; }
+            50% { background-position: 100% 100%; }
+            100% { background-position: 0% 0%; }
+        }
+        .main-card {
+            background: var(--card-background);
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            width: 70%;
+        }
+
+        .form-section {
+            margin-bottom: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text-color);
+        }
+
+        .input-group {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        input[type="text"],
+        textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid var(--border-color);
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        input[type="text"]:focus,
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            color: white;
+            background-color: var(--primary-color);
+            border: none;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-1px);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn i {
+            font-size: 1.1rem;
+        }
+
+        .btn-secondary {
+            background-color: #64748b;
+        }
+
+        .btn-secondary:hover {
+            background-color: #475569;
+        }
+
+        .response-section {
+            margin-top: 2rem;
+        }
+
+        .response-card {
+            background: var(--card-background);
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            padding: 2rem;
+            margin-top: 1rem;
+            display: none;
+        }
+
+        .response-card.show {
+            display: block;
+            animation: slideInUp 0.5s ease-out;
+        }
+
+        .loader {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .loader i {
+            font-size: 2rem;
+            color: var(--primary-color);
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .status-message {
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .status-message.success {
+            background-color: #dcfce7;
+            color: var(--success-color);
+            border: 1px solid #86efac;
+        }
+
+        .status-message.error {
+            background-color: #fee2e2;
+            color: var(--error-color);
+            border: 1px solid #fecaca;
+        }
+
+        .history-section {
+            margin-top: 2rem;
+        }
+
+        .history-item {
+            padding: 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .history-item:hover {
+            background-color: #f1f5f9;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .input-group {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+        #message {
+            font-size: 16px;
+            margin-top: 15px;
+            color: #333;
+        }
+        #widgetContainer {
+            display: none;
+            margin-top: 20px;
+            padding: 15px;
+            background: #e9f5ff;
+            border: 1px solid #007BFF;
+            border-radius: 5px;
+        }
+        textarea {
+            width: 90%;
+            height: 100px;
+            font-size: 14px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 10px;
+        }
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-evenly;
+            background: #ffffff;
+            padding: 20px;
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+            margin: 20px auto;
+            border-radius: 8px;
+            min-width: 95%;
+        }
+        .upper-panel img.logo {
+            width: 120px;
+            height: auto;
+        }
+        .upper-panel h1 {
+            font-size: 30px;
+            color: #0077cc;
+            margin: 0;
+            text-align: center;
+            width: 100%;
+        }
+        h1 {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+        p {
+            font-size: 1.1rem;
+            color: #64748b;
+        }
+    </style>
+</head>
+<body>
+    <header class="upper-panel">
+        <img src="static/logo.png" alt="Main Logo" class="logo">
+        <h1>Cloudhub</h1>
+        <div></div>
+    </header>
+    <h1><i class="fas fa-robot"></i> AI Web Content Analyzer</h1>
+    <p>Extract insights from any webpage using advanced AI analysis</p>
+    <main class="main-card">
+        <div class="form-section">
+            <div class="form-group">
+                <label for="url"><i class="fas fa-link"></i> Website URL</label>
+                <div class="input-group">
+                    <input type="text" id="websiteUrl" placeholder="Enter website URL (e.g., https://example.com)">
+                    <button onclick="crawlWebsite()" class="btn">
+                        <i class="fas fa-spider"></i>
+                        Your Website
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div id="loader" class="loader">
+            <i class="fas fa-spinner"></i>
+        </div>
+
+        <div id="message" class="response-section"></div>
+
+        <div id="widgetContainer">
+            <h3>Chatbot Widget</h3>
+            <p>Copy and paste the following code into your website:</p>
+            <textarea readonly id="widgetCode"></textarea>
+        </div>
+        
+
+    </main>
+
+    <script>
+        function showLoader() {
+            document.getElementById('loader').style.display = 'block';
+        }
+
+        function hideLoader() {
+            document.getElementById('loader').style.display = 'none';
+        }
+        function showMessage(message, type = 'success') {
+            const responseDiv = document.getElementById('response');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `status-message ${type} animate__animated animate__fadeIn`;
+            messageDiv.innerHTML = `
+                <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i>
+                ${message}
+            `;
+            responseDiv.insertBefore(messageDiv, responseDiv.firstChild);
+            
+            // Remove message after 5 seconds
+            setTimeout(() => {
+                messageDiv.remove();
+            }, 5000);
+        }
+        function copyEmbedCode() {
+            const embedCodeText = document.getElementById('embed-code');
+            embedCodeText.select();
+            document.execCommand('copy');
+            showMessage('Embed code copied to clipboard!', 'success');
+        }
+        function crawlWebsite() {
+            showLoader();
+            const url = document.getElementById("websiteUrl").value;
+            const chatbot_id = {{chatbot_id}};
+            if (!url) {
+                document.getElementById("message").innerText = "Please enter a URL";
+                return;
+            }
+
+            fetch("/crawl", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ url: url, chatbot_id: chatbot_id})
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById("message").innerText = data.message;
+                if (data.message.includes("Crawled")) {
+                    displayChatWidget();
+                }
+                hideLoader();
+            })
+            .catch(error => {
+                document.getElementById("message").innerText = "Error: " + error.message;
+            });
+            hideLoader();
+        }
+
+        function displayChatWidget() {
+            let container = document.getElementById("widgetCode");
+            container.innerHTML = '<iframe src="/widget" width="350px" height="400px" style="border:none;"></iframe>';
+            document.getElementById("widgetContainer").style.display = "block";
+        }
+    </script>
+</body>
+</html>

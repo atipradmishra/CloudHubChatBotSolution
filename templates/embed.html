@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Embed Chatbot</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; margin: 20px; }
+        textarea { width: 100%; height: 80px; padding: 10px; font-size: 14px; border: 1px solid #ccc; }
+        button { padding: 10px 15px; background-color: #0078d7; color: #fff; border: none; cursor: pointer; }
+        button:hover { background-color: #005bb5; }
+    </style>
+</head>
+<body>
+
+    <h2>Embed Chatbot</h2>
+    <p>Copy the code below and paste it into your website:</p>
+    
+    <textarea id="embedCode" readonly>{{ iframe_code }}</textarea>
+    <br><br>
+    <button onclick="copyCode()">Copy Code</button>
+
+    <script>
+        function copyCode() {
+            let code = document.getElementById("embedCode");
+            code.select();
+            document.execCommand("copy");
+            alert("Embed code copied!");
+        }
+    </script>
+
+</body>
+</html>

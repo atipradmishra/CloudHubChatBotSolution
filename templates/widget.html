@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot Widget</title>
+    <style>
+        #chatbot-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 300px;
+            background-color: #fff;
+            border: 2px solid #007bff;
+            border-radius: 10px;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
+            font-family: Arial, sans-serif;
+        }
+        #chatbot-header {
+            background-color: #007bff;
+            color: white;
+            padding: 10px;
+            text-align: center;
+            cursor: pointer;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+        }
+        #chatbot-body {
+            display: none;
+            padding: 10px;
+        }
+        #chatbot-messages {
+            height: 200px;
+            overflow-y: auto;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 10px;
+        }
+        #chatbot-input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="chatbot-container">
+        <div id="chatbot-header" onclick="toggleChat()">CloudHub Assistant</div>
+        <div id="chatbot-body">
+            <div id="chatbot-messages"></div>
+            <input type="text" id="chatbot-input" placeholder="Ask about CloudHub services..." onkeypress="handleKeyPress(event)">
+        </div>
+    </div>
+
+    <script>
+        function toggleChat() {
+            let chatBody = document.getElementById("chatbot-body");
+            chatBody.style.display = chatBody.style.display === "none" ? "block" : "none";
+        }
+    
+        async function fetchAIResponse(userInput) {
+            const apiEndpoint = "https://aichatbot.eba-va2b3ztk.us-east-1.elasticbeanstalk.com/ask";
+            try {
+                let response = await fetch(apiEndpoint, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ question: userInput, bid:'2' })
+                });
+    
+                let data = await response.json();
+                return data.answer || "Sorry, I couldn't fetch an answer. Please check our website.";
+            } catch (error) {
+                return "Error connecting to AI. Please try again later.";
+            }
+        }
+    
+        async function handleKeyPress(event) {
+            if (event.key === "Enter") {
+                let inputField = document.getElementById("chatbot-input");
+                let userInput = inputField.value.trim();
+                inputField.value = "";
+                displayMessage("User: " + userInput, "user");
+    
+                let aiResponse = await fetchAIResponse(userInput);
+                displayMessage("CloudHub: " + aiResponse, "bot");
+            }
+        }
+    
+        function displayMessage(message, sender) {
+            let chatMessages = document.getElementById("chatbot-messages");
+            let messageElement = document.createElement("div");
+            messageElement.innerText = message;
+            messageElement.style.padding = "5px";
+            messageElement.style.margin = "5px 0";
+            messageElement.style.backgroundColor = sender === "user" ? "#e1e1e1" : "#007bff";
+            messageElement.style.color = sender === "user" ? "#000" : "#fff";
+            messageElement.style.borderRadius = "5px";
+            chatMessages.appendChild(messageElement);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+    </script>
+
+</body>
+</html>
